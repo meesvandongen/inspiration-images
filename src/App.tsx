@@ -1,4 +1,3 @@
-import './reset.css';
 import classes from './App.module.css';
 
 const context = import.meta.webpackContext('./real-world', {
