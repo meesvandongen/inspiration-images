@@ -1,32 +1,28 @@
-import classes from './App.module.css';
+import { RouterProvider, createRouter } from '@tanstack/react-router';
 
-const context = import.meta.webpackContext('./real-world', {
-  recursive: false,
-  regExp: /\.png$/,
+import { GridSizeProvider } from './components/ui/grid';
+import { routeTree } from './routeTree.gen';
+
+// Set up a Router instance
+const router = createRouter({
+  routeTree,
+  defaultPreload: 'intent',
+  context: {
+    title: 'Home',
+  },
 });
 
-console.log(context.keys());
-
+// Register things for typesafety
+declare module '@tanstack/react-router' {
+  interface Register {
+    router: typeof router;
+  }
+}
 const App = () => {
   return (
-    <div className={classes.grid}>
-      {context.keys().map((key) => {
-        const title = key.replace('./', '').replace('.png', '');
-        return (
-          <div key={key} className={classes.item}>
-            <img src={context(key) as string} alt={title} />
-            <a
-              className={classes.title}
-              href={context(key) as string}
-              target="_blank"
-              rel="noreferrer"
-            >
-              {title}
-            </a>
-          </div>
-        );
-      })}
-    </div>
+    <GridSizeProvider>
+      <RouterProvider router={router} />
+    </GridSizeProvider>
   );
 };
 
