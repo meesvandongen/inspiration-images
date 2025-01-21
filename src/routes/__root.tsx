@@ -1,4 +1,6 @@
 import { AppSidebar } from '@/components/app-sidebar';
+import { ModeToggle } from '@/components/mode-toggle';
+import { ThemeProvider } from '@/components/theme-provider';
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -36,49 +38,52 @@ function RootComponent() {
   const matches = useRouterState({ select: (s) => s.matches });
 
   return (
-    <GridSizeProvider>
-      <SidebarProvider>
-        <AppSidebar />
-        <SidebarInset>
-          <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4">
-            <SidebarTrigger className="-ml-1" />
-            <Separator orientation="vertical" className="mr-2 h-4" />
-            <Breadcrumb>
-              <BreadcrumbList>
-                {matches
-                  .filter((match) => match.context.title)
-                  .map(({ context, pathname }, index, fullArray) => (
-                    <Fragment key={pathname}>
-                      {index < fullArray.length - 1 && (
-                        <>
-                          <BreadcrumbItem className="hidden md:block">
-                            <BreadcrumbLink asChild>
-                              <Link to={pathname}>{context.title}</Link>
-                            </BreadcrumbLink>
+    <ThemeProvider defaultTheme="light">
+      <GridSizeProvider>
+        <SidebarProvider>
+          <AppSidebar />
+          <SidebarInset>
+            <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4">
+              <SidebarTrigger className="-ml-1" />
+              <Separator orientation="vertical" className="mr-2 h-4" />
+              <Breadcrumb>
+                <BreadcrumbList>
+                  {matches
+                    .filter((match) => match.context.title)
+                    .map(({ context, pathname }, index, fullArray) => (
+                      <Fragment key={pathname}>
+                        {index < fullArray.length - 1 && (
+                          <>
+                            <BreadcrumbItem className="hidden md:block">
+                              <BreadcrumbLink asChild>
+                                <Link to={pathname}>{context.title}</Link>
+                              </BreadcrumbLink>
+                            </BreadcrumbItem>
+                            <BreadcrumbSeparator className="hidden md:block" />
+                          </>
+                        )}
+                        {index === fullArray.length - 1 && (
+                          <BreadcrumbItem>
+                            <BreadcrumbPage>{context.title}</BreadcrumbPage>
                           </BreadcrumbItem>
-                          <BreadcrumbSeparator className="hidden md:block" />
-                        </>
-                      )}
-                      {index === fullArray.length - 1 && (
-                        <BreadcrumbItem>
-                          <BreadcrumbPage>{context.title}</BreadcrumbPage>
-                        </BreadcrumbItem>
-                      )}
-                    </Fragment>
-                  ))}
-              </BreadcrumbList>
-            </Breadcrumb>
-            <div className="ml-auto px-3">
-              <GridSizeSlider />
+                        )}
+                      </Fragment>
+                    ))}
+                </BreadcrumbList>
+              </Breadcrumb>
+              <div className="ml-auto px-3 flex items-center gap-4">
+                <GridSizeSlider />
+                <ModeToggle />
+              </div>
+            </header>
+            <div className="flex flex-1 flex-col gap-4 p-4">
+              <Outlet />
             </div>
-          </header>
-          <div className="flex flex-1 flex-col gap-4 p-4">
-            <Outlet />
-          </div>
-        </SidebarInset>
-      </SidebarProvider>
+          </SidebarInset>
+        </SidebarProvider>
 
-      <TanStackRouterDevtools position="bottom-right" />
-    </GridSizeProvider>
+        <TanStackRouterDevtools position="bottom-right" />
+      </GridSizeProvider>
+    </ThemeProvider>
   );
 }

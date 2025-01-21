@@ -11,26 +11,42 @@
   border-radius: 0.5rem;
 }
 
+.popoverButton {
+  aspect-ratio: 1024/768;
+  width: 100%;
+  border-radius: 0.5rem;
+}
+
 .item {
   position: relative;
   display: flex;
   justify-content: center;
 }
 
-.title {
-  background-color: rgba(0, 0, 0, 0.2);
-  backdrop-filter: blur(5px);
-  border-radius: 0.5rem;
+.popover {
+  &::backdrop {
+    background-color: #0005;
+  }
+  &,
+  &::backdrop {
+    transition: display 0.2s allow-discrete, overlay 0.2s allow-discrete,
+      opacity 0.2s, transform 0.2s;
+    opacity: 0;
+  }
 
-  position: absolute;
-  bottom: 0.1rem;
-  padding: 0.1rem 0.5rem;
-
-  color: white;
-  font-size: 1.5rem;
-  text-decoration: none;
-  font-weight: 600;
-  &:hover {
-    background-color: rgba(0, 0, 0, 0.7);
+  &:popover-open,
+  &:popover-open::backdrop {
+    opacity: 1;
+  }
+  @starting-style {
+    &:popover-open,
+    &:popover-open::backdrop {
+      opacity: 0;
+    }
+    
+    &:popover-open {
+      transform: translateY(10px);
+    }
   }
 }
+

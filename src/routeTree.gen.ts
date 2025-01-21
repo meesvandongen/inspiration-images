@@ -11,10 +11,17 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
+import { Route as IndexImport } from './routes/index'
 import { Route as LocationsRealWorldImport } from './routes/locations/real-world'
 import { Route as LocationsAbstractImport } from './routes/locations/abstract'
 
 // Create/Update Routes
+
+const IndexRoute = IndexImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => rootRoute,
+} as any)
 
 const LocationsRealWorldRoute = LocationsRealWorldImport.update({
   id: '/locations/real-world',
@@ -32,6 +39,13 @@ const LocationsAbstractRoute = LocationsAbstractImport.update({
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexImport
+      parentRoute: typeof rootRoute
+    }
     '/locations/abstract': {
       id: '/locations/abstract'
       path: '/locations/abstract'
@@ -52,36 +66,41 @@ declare module '@tanstack/react-router' {
 // Create and export the route tree
 
 export interface FileRoutesByFullPath {
+  '/': typeof IndexRoute
   '/locations/abstract': typeof LocationsAbstractRoute
   '/locations/real-world': typeof LocationsRealWorldRoute
 }
 
 export interface FileRoutesByTo {
+  '/': typeof IndexRoute
   '/locations/abstract': typeof LocationsAbstractRoute
   '/locations/real-world': typeof LocationsRealWorldRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
+  '/': typeof IndexRoute
   '/locations/abstract': typeof LocationsAbstractRoute
   '/locations/real-world': typeof LocationsRealWorldRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/locations/abstract' | '/locations/real-world'
+  fullPaths: '/' | '/locations/abstract' | '/locations/real-world'
   fileRoutesByTo: FileRoutesByTo
-  to: '/locations/abstract' | '/locations/real-world'
-  id: '__root__' | '/locations/abstract' | '/locations/real-world'
+  to: '/' | '/locations/abstract' | '/locations/real-world'
+  id: '__root__' | '/' | '/locations/abstract' | '/locations/real-world'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
+  IndexRoute: typeof IndexRoute
   LocationsAbstractRoute: typeof LocationsAbstractRoute
   LocationsRealWorldRoute: typeof LocationsRealWorldRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
+  IndexRoute: IndexRoute,
   LocationsAbstractRoute: LocationsAbstractRoute,
   LocationsRealWorldRoute: LocationsRealWorldRoute,
 }
@@ -96,9 +115,13 @@ export const routeTree = rootRoute
     "__root__": {
       "filePath": "__root.tsx",
       "children": [
+        "/",
         "/locations/abstract",
         "/locations/real-world"
       ]
+    },
+    "/": {
+      "filePath": "index.tsx"
     },
     "/locations/abstract": {
       "filePath": "locations/abstract.tsx"

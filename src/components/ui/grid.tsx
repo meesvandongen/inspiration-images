@@ -2,10 +2,11 @@ import {
   type CSSProperties,
   createContext,
   useContext,
+  useId,
   useMemo,
   useState,
 } from 'react';
-import styles from './grid.module.css';
+import classes from './grid.module.css';
 
 const GridSizeContext = createContext<
   | {
@@ -47,7 +48,7 @@ export function Grid({
   const { size } = useGridSize();
   return (
     <div
-      className={styles.grid}
+      className={classes.grid}
       style={
         {
           '--size': `${size}px`,
@@ -64,7 +65,7 @@ export function GridItem({
 }: {
   children?: React.ReactNode;
 }) {
-  return <div className={styles.item}>{children}</div>;
+  return <div className={classes.item}>{children}</div>;
 }
 
 export function GridImage({
@@ -74,19 +75,35 @@ export function GridImage({
   src: string;
   alt: string;
 }) {
-  return <img className={styles.image} src={src} alt={alt} />;
+  const id = useId();
+
+  return (
+    <button type="button" popoverTarget={id} className={classes.popoverButton}>
+      <img
+        className={classes.image}
+        src={src}
+        alt={alt}
+        style={{
+          viewTransitionName: id,
+        }}
+      />
+      <div popover="auto" id={id} className={classes.popover}>
+        <img
+          src={src}
+          alt={alt}
+          style={{
+            viewTransitionName: id,
+          }}
+        />
+      </div>
+    </button>
+  );
 }
 
 export function GridTitle({
   children,
-  href,
 }: {
   children?: React.ReactNode;
-  href: string;
 }) {
-  return (
-    <a href={href} className={styles.title} target="_blank" rel="noreferrer">
-      {children}
-    </a>
-  );
+  return <span className="absolute bottom-2 flex px-2 py-1 capitalize bg-background text-foreground rounded-md text-sm font-semibold">{children}</span>;
 }

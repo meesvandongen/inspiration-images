@@ -26,7 +26,7 @@ function RouteComponent() {
           return (
             <GridItem key={key}>
               <GridImage src={context(key) as string} alt={title} />
-              <GridTitle href={context(key) as string}>{title}</GridTitle>
+              <GridTitle>{title}</GridTitle>
             </GridItem>
           );
         })}
